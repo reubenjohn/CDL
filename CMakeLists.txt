@@ -12,3 +12,5 @@ add_executable(l6q3 src/L6/3/q.c)
 add_executable(l6q4 src/L6/4/q.c)
 
 add_executable(l7q1 src/L7/1/q.c)
+
+add_executable(l8q1 src/L8/1-new/q.c)

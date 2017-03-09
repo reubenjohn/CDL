@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <iostream>
-#include <fstream>
-
-using namespace std;
 
 typedef enum{
 	START,
@@ -17,13 +13,13 @@ typedef enum{
 	CHARACTER_LITERAL
 }State;
 
-typedef enum {S_,S,S1,S2,S3,T,T_,T_1,T_2}Keyword;
-char* keys[] = {"S'","S1","S2","S3","T","T'","T'1","T'2"};
-const int keySize = 6;
+typedef enum {A_,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q}NonTerminal;
+char* nonTerminals[] = {};
+const int nonTerminalSize = 0;
 
-typedef enum {L_PR,R_PR,a,COMMA,MINU,DOL}Terminal;
-char* spec[] = {"(",")","a",",","->","$"};
-const int specSize = 6;
+typedef enum {MAIN,L_PR,R_PR,L_CB,R_CB,L_SB,R_SB,SC,INT,CHAR,ID,NUM,COMMA,EQEQ,NTEQ,LTEQ,GTEQ,GT,LT,PLUS,MINUS,STAR,DIV,PERC,EQ,DOL}Terminal;
+char* terminal[] = {"main","(",")","{","}","[","]",";","int","char","id","num",",","==","!=","<=",">=",">","<","+","-","*","/","%","=","$"};
+const int terminalSize = 26;
 
 typedef enum{Int,Double,Char,Float,Void,IntPtr,DoublePtr,CharPtr,FloatPtr,VoidPtr,KEYWORD,FUNCTION,IDENTIFIER,TERMINAL,LITERAL_STRING,LITERAL_CHARACTER,LITERAL_NUMERIC}Type;
 typedef struct{
@@ -85,19 +81,19 @@ int matchesId(char* s){
 	return i;
 }
 
-Keyword matchesTerminals(char *s){
+NonTerminal matchesNonTerminals(char *s){
 	int i=0;
 	if(s[0] != '_' && !isalpha(s[0]))
-		return (Keyword)-1;
+		return -1;
 	int n = matchesId(s);
 	char s2[100];
 	strcpy(s2,s);
 	s2[n] = '\0';
-	return (Keyword)matchesList(keys,keySize,s2);
+	return matchesList(nonTerminals,nonTerminalSize,s2);
 }
 
 Terminal matchesTerminal(char* s){
-	return (Terminal)matchesList(spec,specSize,s);
+	return matchesList(terminal,terminalSize,s);
 }
 
 void print(char* s, int n){
@@ -139,14 +135,12 @@ int isWhiteSpace(char c){
 }
 
 void getTokenStream(Token tokens[], int *tokenCount){
-	std::ifstream in("/home/reuben/Documents/MIT/Sem 6/CDL/L5/1/test2.c");
-	std::cin.rdbuf(in.rdbuf());
 	State state = START, prevState = START;
 	char s[100];
 	s[0] = '\0';
 	int ptr = 0;
 	char c;
-	while(cin>>c){
+	while(scanf("%c",&c)>0 && c!='$'){
 
 		prevState = state;
 
@@ -216,10 +210,10 @@ void getTokenStream(Token tokens[], int *tokenCount){
 
 			//printf("\n(%s),%d\n",s,ptr);
 			if(isWhiteSpace(c) || matchesTerminal(cStr)!=-1 || matchesTerminal(s)!=-1
-				|| prevState==STRING_LITERAL || prevState == CHARACTER_LITERAL){
+			   || prevState==STRING_LITERAL || prevState == CHARACTER_LITERAL){
 				int i=0;
 				if(ptr>0)
-					;//printf("\n(%s),%d\n",s,ptr);
+					printf("\n(%s),%d\n",s,ptr);
 				if(prevState==STRING_LITERAL){
 					insertToken(tokens,tokenCount,LITERAL_STRING,s+1,-1);
 					printf("<l%d %s\"\t> ",prevState,s);
@@ -228,11 +222,11 @@ void getTokenStream(Token tokens[], int *tokenCount){
 					insertToken(tokens,tokenCount,LITERAL_CHARACTER,s+1,-1);
 					printf("<l%d %s\'\t> ",prevState,s);
 					clearBuf(&ptr,s,-1);
-				}else if(matchesKeys(s)!=-1){
+				}else if(matchesNonTerminals(s)!=-1){
 					insertToken(tokens,tokenCount,KEYWORD,s,-1);
 					printf("<%s>\t",s);
 					clearBuf(&ptr,s,-1);
-				}else if((i=matchesId(s))!=-1){
+				}else if((i=matchesId(s))!=-1 && 0){
 					insertToken(tokens,tokenCount,IDENTIFIER,s,i);
 					printf("<id ");printAndClear(s,&ptr,i);printf(">\t");
 				}else if((i=matchesNumericLiteral(s))!=-1){
@@ -264,4 +258,6 @@ void getTokenStream(Token tokens[], int *tokenCount){
 			}
 		}
 	}
+	s[0]='$';s[1]='\0';
+	insertToken(tokens,tokenCount,TERMINAL,s,-1);
 }
