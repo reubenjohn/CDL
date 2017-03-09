@@ -14,11 +14,11 @@ typedef enum{
 }State;
 
 typedef enum {A_,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q}NonTerminal;
-char* nonTerminals[] = {};
+const char* nonTerminals[] = {};
 const int nonTerminalSize = 0;
 
 typedef enum {MAIN,L_PR,R_PR,L_CB,R_CB,L_SB,R_SB,SC,INT,CHAR,ID,NUM,COMMA,EQEQ,NTEQ,LTEQ,GTEQ,GT,LT,PLUS,MINUS,STAR,DIV,PERC,EQ,DOL}Terminal;
-char* terminal[] = {"main","(",")","{","}","[","]",";","int","char","id","num",",","==","!=","<=",">=",">","<","+","-","*","/","%","=","$"};
+const char* terminal[] = {"main","(",")","{","}","[","]",";","int","char","id","num",",","==","!=","<=",">=",">","<","+","-","*","/","%","=","$"};
 const int terminalSize = 26;
 
 typedef enum{Int,Double,Char,Float,Void,IntPtr,DoublePtr,CharPtr,FloatPtr,VoidPtr,KEYWORD,FUNCTION,IDENTIFIER,TERMINAL,LITERAL_STRING,LITERAL_CHARACTER,LITERAL_NUMERIC}Type;
@@ -57,7 +57,7 @@ void printTokens(Token tokens[], int count){
 	}
 }
 
-int matchesListPostFix(char* list[], int size, char* s, char* postFix){
+int matchesListPostFix(const char* list[], int size, char* s, char* postFix){
 	for(int i=0;i<size;i++){
 		char tmp[50];
 		strcpy(tmp,list[i]);
@@ -68,7 +68,7 @@ int matchesListPostFix(char* list[], int size, char* s, char* postFix){
 	return -1;
 }
 
-int matchesList(char* list[], int size, char* s){
+int matchesList(const char* list[], int size, char* s){
 	return matchesListPostFix(list,size,s,"");
 }
 

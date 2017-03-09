@@ -1,3 +1,5 @@
+#include <L8/1-new/tokenizer.h>
+
 Terminal getNextTerminal(Token token) {
 	return matchesTerminal(token.lexeme);
 }
@@ -101,7 +103,7 @@ void printState(int nesting, State state) {
 
 void printSuccess(int nesting, State state) {
 	printNesting(nesting);
-	printf("Matched %c\n", 'A' + state - 1);
+	printf("Succeeded %c\n", 'A' + state - 1);
 }
 
 void printFailure(int nesting, State state) {
@@ -164,6 +166,8 @@ int tryProduction(TerminalStream *terminals, Grammar *grammar, Production produc
 				terminals->curr = backup;
 				return 0;
 			} else {
+				printNesting(nesting);
+				printf("Matched %s\n", terminal[*terminals->curr]);
 				terminals->curr++;
 				//Continue with next term
 			}
